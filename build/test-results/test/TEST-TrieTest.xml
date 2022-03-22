@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="TrieTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2022-03-22T17:25:07" hostname="DESKTOP-NC82IE0" time="0.029">
+  <properties/>
+  <testcase name="Testing insertion and contains" classname="TrieTest" time="0.027"/>
+  <testcase name="Testing removal" classname="TrieTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
