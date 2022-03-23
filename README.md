@@ -1,5 +1,7 @@
 Hi!  Really sorry there isn't a CLI;  I had a lot of schoolwork and didn't have time to finish one (although it's very easy to use with curl)
 
+Start the server with .\gradlew run (requires Java 17)
+
 REST endpoints:
 
 ### `GET` /:word

@@ -1,5 +1,10 @@
 plugins {
     id 'java'
+    id 'application'
+}
+
+application {
+    mainClass = 'server.Server'
 }
 
 group 'org.example'
@@ -38,6 +43,7 @@ tasks.withType(Test) {
 
 tasks.withType(JavaExec) {
     jvmArgs += '--enable-preview'
-    jvmArgs += "--add-opens java.base/java.net=ALL-UNNAMED"
+    jvmArgs += "--add-opens"
+    jvmArgs += "java.base/java.net=ALL-UNNAMED"
 }
 
