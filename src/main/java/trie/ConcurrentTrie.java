@@ -7,6 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class ConcurrentTrie implements Trie {
     private final Trie inner;
+	// synchronized does not maintain the order of who gets the lock after it's done, so use a reentrantlock
     private final ReentrantLock reentrantLock;
 
     public ConcurrentTrie(Trie inner) {

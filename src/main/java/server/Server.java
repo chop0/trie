@@ -20,8 +20,7 @@ public class Server {
 			if (trie.removeWord(word))
 				return "Removed word.";
 			else
-				return null;
-
+				return null; // 404
 		});
 
 		get("/:word", (req, res) -> {
@@ -45,7 +44,7 @@ public class Server {
 				}
 		);
 
-		get("/", (req, res) -> trie.toString());
+		get("/", (req, res) -> trie.toString().replace("\t", "&emsp;").replace("\n", "<br/>"));
 
 
 		post("/:word", (req, res) -> {

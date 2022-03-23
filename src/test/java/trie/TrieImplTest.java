@@ -60,8 +60,16 @@ public class TrieImplTest {
 		assertFalse(trieImpl.containsWord("hello"));
 
 		assertFalse(trieImpl.removeWord("helloa"));
+		trieImpl.insertWord("hello");
+		trieImpl.insertWord("hell");
+		trieImpl.insertWord("helloabcdefg");
 		trieImpl.insertWord("helloa");
 		assertTrue(trieImpl.removeWord("helloa"));
+
+		assertTrue(trieImpl.containsWord("hello"));
+		assertTrue(trieImpl.containsWord("hell"));
+		assertTrue(trieImpl.containsWord("helloabcdefg"));
+
 		assertFalse(trieImpl.containsWord("helloa"));
 
 		assertFalse(trieImpl.removeWord("h"));

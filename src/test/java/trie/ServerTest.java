@@ -97,7 +97,7 @@ public class ServerTest implements Trie {
 	public String toString() {
 		var res = server.execute(server.get("/", true));
 		assertEquals(200, res.code());
-		return new String(res.body(), StandardCharsets.UTF_8);
+		return new String(res.body(), StandardCharsets.UTF_8).replace("&emsp;", "\t").replace("<br/>", "\n");
 	}
 
 	@Test
