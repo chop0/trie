@@ -1,6 +1,7 @@
 package trie;
 
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -26,7 +27,7 @@ public class ConcurrentTrie implements Trie {
         return result;
     }
 
-    public Optional<TrieImpl> getSubtrie(String word) {
+    public Optional<Trie> getSubtrie(String word) {
         reentrantLock.lock();
         var result = inner.getSubtrie(word);
         reentrantLock.unlock();
@@ -66,5 +67,24 @@ public class ConcurrentTrie implements Trie {
         var result = inner.compareTo(o);
         reentrantLock.unlock();
         return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof ConcurrentTrie that))
+            return false;
+        return that.inner.equals(inner);
+    }
+
+    @Override
+    public String toString() {
+        return inner.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        return inner.hashCode();
     }
 }

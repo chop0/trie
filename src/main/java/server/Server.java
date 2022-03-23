@@ -1,65 +1,66 @@
 package server;
 
-import packet.AckPacket;
-import packet.BooleanPacket;
-import packet.TriePacket;
-import packet.WordPacket;
 import trie.Trie;
 
-import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetSocketAddress;
-import java.net.SocketException;
-import java.nio.ByteBuffer;
-import java.nio.channels.DatagramChannel;
+import java.util.List;
 
-public class Server implements AutoCloseable {
-    private static final Trie trie = Trie.trie();
-    public static final int PORT = 3000;
-    private static final int BUFSIZE = 0x500;
+import static spark.Spark.*;
 
-    private final Thread server;
+public class Server {
+	private Trie trie;
+	public void clearTrie() {
+		trie = Trie.concurrentTrie();
+	}
 
-    public Server() throws IOException {
-        this.server = new Thread(() -> {
-            try {
-                var socket = new DatagramSocket(PORT);
-                var buffer = ByteBuffer.allocate(BUFSIZE);
-                var bufferPacket = new DatagramPacket(buffer.array(), BUFSIZE, buffer.arrayOffset());
-//                socket.bind(new InetSocketAddress("localhost", PORT));
-                while(!Thread.interrupted()) {
+	public Server() {
+		this.trie = Trie.concurrentTrie();
 
-                    socket.receive(bufferPacket);
-                    Sys
-                    var response = handlePacket((WordPacket) TriePacket.deserialise(bufferPacket)).serialise();
+		delete("/:word", (req, res) -> {
+			var word = req.params("word");
+			if (trie.removeWord(word))
+				return "Removed word.";
+			else
+				return null;
 
-                    socket.send(new DatagramPacket(response, response.length, bufferPacket.getSocketAddress()));
-                }
+		});
 
-                socket.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+		get("/:word", (req, res) -> {
+					var word = req.params("word");
+					if (!trie.containsWord(word)) {
+						res.status(404);
+						return "Exact match for {%s} not found.".formatted(word);
+					} else
+						return "Exact match for {%s} present.".formatted(word);
+				}
+		);
 
-        server.start();
+		get("/:word/completions", (req, res) -> {
+					var word = req.params("word");
+					var subtrie = trie.getSubtrie(word);
+
+					if (subtrie.isPresent())
+						return subtrie.get().getAllWords().stream().map(n -> n.substring(1)).toList();
+					else
+						return List.of();
+				}
+		);
+
+		get("/", (req, res) -> trie.toString());
+
+
+		post("/:word", (req, res) -> {
+			var word = req.params("word");
+
+			var containsBefore = trie.containsWord(word);
+			trie.insertWord(word);
+			res.status(containsBefore ? 204 : 201);
+			return (containsBefore ? "{%s} already present." : "Added {%s}").formatted(word);
+		});
+	}
+
+    public static void main(String[] argv) {
+        new Server();
     }
 
-    private TriePacket handlePacket(WordPacket wordPacket) {
-        return switch (wordPacket.operation) {
-            case INSERT -> {
-                trie.insertWord(wordPacket.word);
-                yield new AckPacket();
-            }
-            case CONTAINS -> new BooleanPacket(trie.containsWord(wordPacket.word));
-            case REMOVE -> new BooleanPacket(trie.removeWord(wordPacket.word));
-        };
-    }
 
-    @Override
-    public void close() throws Exception {
-        server.interrupt();
-        server.join();
-    }
 }

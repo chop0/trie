@@ -18,7 +18,7 @@ public interface Trie extends Comparable<TrieImpl> {
 
     boolean containsWord(String word);
 
-    Optional<TrieImpl> getSubtrie(String word);
+    Optional<Trie> getSubtrie(String word);
 
     // didn't feel like making this method recursive
     boolean removeWord(String word);

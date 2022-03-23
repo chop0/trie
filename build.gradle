@@ -10,8 +10,15 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    implementation("com.sparkjava:spark-core:2.9.3")
+    implementation 'org.projectlombok:lombok:1.18.22'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+
+    testImplementation 'com.despegar:spark-test:1.1.8'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
+    testImplementation group: 'org.junit-pioneer', name: 'junit-pioneer', version: '1.6.2'
 }
 
 test {
@@ -25,9 +32,12 @@ tasks.withType(JavaCompile).each {
 }
 tasks.withType(Test) {
     jvmArgs += "--enable-preview"
+    jvmArgs += "--add-opens"
+    jvmArgs += 'java.base/java.net=ALL-UNNAMED'
 }
 
 tasks.withType(JavaExec) {
     jvmArgs += '--enable-preview'
+    jvmArgs += "--add-opens java.base/java.net=ALL-UNNAMED"
 }
 
